@@ -1,0 +1,13 @@
+# environment variables
+.env
+
+# node modules
+node_modules/
+
+# gitignore
+
+# cert key
+private_key.pem
+
+# npm debug logs
+npm-debug.log

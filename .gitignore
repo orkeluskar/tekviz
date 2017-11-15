@@ -8,6 +8,7 @@ node_modules/
 
 # cert key
 private_key.pem
+public.pem
 
 # npm debug logs
 npm-debug.log

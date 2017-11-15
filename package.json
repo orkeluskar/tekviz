@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "Omkar Keluskar & Sheifali Momin",
   "license": "ISC",
@@ -19,5 +19,8 @@
     "jsonwebtoken": "^8.0.1",
     "mysql": "^2.14.1",
     "nodemailer": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
   }
 }

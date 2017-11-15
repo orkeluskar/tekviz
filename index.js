@@ -237,4 +237,13 @@ app.post('/login', function(req, res){
         });
 });
 
+// includes profile routes
+var profile = require('./routes/user/profile');
+
+// View profile
+app.post('/profile', profile.viewProfile);
+
+// Update profile
+app.post('/profile/update', profile.updateProfile);
+
 app.listen(process.env.PORT || 3001);

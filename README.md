@@ -18,5 +18,9 @@
      - routes/
        - user.js
        - auth.js
+     - .env
+     - index.js
+     - package.json
+     - node_modules/
    ```
 

@@ -3,7 +3,7 @@
 require('dotenv').config();
 
 var express = require('express');
-var mysql = require('mysql');
+
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var fs = require('fs');
@@ -15,7 +15,7 @@ var jwt = require('jsonwebtoken');
 var app = express();
 
 //db configs
-var con = require('../db');
+var con = require('../../configs/db');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -24,19 +24,20 @@ app.use(bodyParser.urlencoded({
 
 app.use(cors());
 
-con.connect();
 
-const verifyToken = require('./verifyToken');
+
+const verifyToken = require('../auth/verifyToken');
 
 // view profile
 exports.viewProfile = function (req, res){
     let token = req.body.token;
     let val = verifyToken.verifyToken(token);
     //console.log(val);
-
+    //console.log(token, val);
     let resp ;
     if (val.email != undefined){
-        let sql = 'SELECT * FROM User WHERE ur_emailID=' + mysql.escape(val.email);
+        let role = val.role;
+        let sql = 'SELECT * FROM ' + role + ' WHERE ar_emailID=' + mysql.escape(val.email);
         con.query(sql, function (error, results, fields) {
             if (error) 
                 return res.send(error);
@@ -62,7 +63,7 @@ exports.updateProfile = function(req, res){
     let token = req.body.token;
     let val = verifyToken.verifyToken(token);
     //console.log(val);
-
+    console.log(token, val);
     if(val.name != undefined){
         return res.send(val);
     }

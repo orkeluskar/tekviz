@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title id="title">SpacedIO | Admin Panel</title>
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    <style>
+        .nav-content{
+            background-color: darkslategray;
+        }
+        .nav-wrapper{
+            background-color: black;
+        }
+        .truncate {
+            width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+    </style>
+</head>
+
+
+
+<body>
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <center>
+                    <h4>Admin Login</h4>
+            </center>
+            <div class="container">
+                    <div class="row">
+                    <div class="login" >
+                            <div class="form"> 
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <input id="email" type="email" class="validate" />
+                                        <label for="email" data-error="wrong" data-success="right">Email</label>
+                                    </div>
+                                </div>
+            
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <input id="password" type="password" class="validate" />
+                                        <label for="password">Password</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a onclick="signin()" href="#!" style="display: block;"  class="modal-action modal-close waves-effect waves-green btn">Sign In</a>
+        </div>
+    </div>
+
+
+    <!--this modal is for uploading files-->
+    <div id="uploadFiles" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <center>
+                        <h4>Upload WebGL files here</h4>
+                </center>
+                <div class="container">
+                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                            <div class="file-field input-field">
+                                <div class="btn">
+                                    <span>File</span>
+                                    <input name="file" id="file" type="file" multiple>
+                                </div>
+                                    <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                                </div>
+                            </div>
+                            <button type="submit">Upload</button>
+                        </form>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" style="display: block;"  class="modal-action modal-close waves-effect waves-green btn">Close</a>
+            </div>
+        </div>
+
+
+
+    <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="lm5 brand-logo">SpacedIO</a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a onclick="logout()" id='logout' class="waves-effect waves-light btn" style="display: none">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="nav-content" style="display:none">
+                <ul class="tabs tabs-transparent tabs-fixed-width">
+                    <li class="tab"><a class="active" href="#addArch">Add Architects</a></li>
+                    <li class="tab"><a onclick="loadProjects()" href="#projects">Project(s)</a></li>
+                    <li class="tab"><a href="#test4">Settings</a></li>
+                </ul>
+        </div>
+
+        <div id="addArch">
+                <div id="arch" class="row" style="display:none">
+                    <div class="col s12">
+                        Architect's email id:
+                        <div class="input-field inline">
+                            <input id="archEmail" type="email" class="validate" required/>
+                            <label for="archEmail" data-error="wrong" data-success="right">Email</label>
+                        </div>
+                    </div>
+                    <div class="col s12">
+                        <a onclick="addArchitect()" class="waves-effect waves-light btn">Add</a>
+                    </div>
+                </div>
+                
+        </div>
+
+
+        <div id="projects">
+            <div class="container" id="projectTable" >
+
+            </div>
+        </div>
+    <script>
+        const isLoggedIn = () => {
+            $('.modal').modal();
+            if(localStorage.getItem('token') == undefined){
+                $('#modal1').modal('open');
+                return false
+            }else{
+                $('#logout').css('display', 'inline-block');
+                $('.nav-content').css('display', 'block');
+                return true
+            }
+        }
+        isLoggedIn();
+
+        const logout = () => {
+            localStorage.removeItem('token');
+            location.reload();
+        }
+
+        //Add's architect to the system
+        const addArchitect = () =>{
+            let email = document.getElementById('archEmail').value
+            if(email == ""){
+                Materialize.toast("Invalid email-id!", 5000);
+                return false
+            }
+            let val = {
+                email: document.getElementById('archEmail').value,
+                role: "architect"
+            }
+            fetch("http://localhost:3001/user",{
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(val)
+            })
+            .then((response) => response.json())
+            .then(function(res){
+                Materialize.toast("Architect added with email-id:" + document.getElementById('archEmail').value, 5000);
+            })
+            .catch((err)=>{
+                console.log(err);
+                Materialize.toast("Something went wrong! Try again!", 5000);
+            })
+
+
+        }
+
+        //verify if the admin's logged in
+        if (isLoggedIn()){
+            $('#arch').css('display', 'block');
+        }
+
+        // load All projects
+        const loadProjects = async () => {
+            await fetch("http://localhost:3001/project",{
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem('token')
+                })
+            })
+            .then((response) => response.json())
+            .then(function(res){
+                const result = res.result;
+                console.log(result);
+                let projects = '<table>'
+                            + '<thead>'
+                                + '<tr>'
+                                    + '<th>ID</th>'
+                                    + '<th>Architect-ID</th>'
+                                    + '<th>Title</th>'
+                                    + '<th>Description</th>'
+                                    + '<th>Deadline</th>'
+                                    + '<th>Time created</th>'
+                                + '</tr>'
+                            + '</thead>'
+
+                            '<tbody>';
+
+                for (let i in result){
+                    console.log("lol");
+                    projects +=  '<tr>'
+                                + '<td>'
+                                        + '<button class="btn" value="' + result[i].pid +'"onclick="loadProject(this.value)">' + result[i].pid  
+                                    + '</button></td>'
+                                + '<td>' + (('<b>' + result[i].email + '</b>') || 'DELETED!') + '</td>'
+                                + '<td>' + result[i].title + '</td>'
+                                + '<td class="truncate">' + result[i].description + '</td>'
+                                + '<td>' + new Date(result[i].deadline).toLocaleString() + '</td>'
+                                + '<td>' + new Date(result[i].time_created).toLocaleString() + '</td>'
+                            '</tr>';
+                }
+                projects += '</tbody>'
+                        + '</table>';
+                
+                document.getElementById('projectTable').innerHTML = projects;
+                //console.log(projects);
+
+            })
+            .catch((err)=>{
+                console.log(err);
+                Materialize.toast("Something went wrong! Try again!", 5000);
+            })
+        }
+
+
+
+        
+    </script>
+
+
+
+
+
+</body>
+
+<script>
+
+    function signin(){
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        let val = {
+            role: "admin",
+            email: email,
+            password: password
+        }
+        if (email != "" && password != ""){
+
+            fetch("http://localhost:3001/login",{
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(val)
+            })
+            .then(function(response) {
+                return response.json()
+            })
+            .then(function(res){
+                console.log(res);
+                temp = res;
+                if(res.error){
+                    isLoggedIn();
+                }
+                else{
+                    localStorage.setItem('token', res.token);
+                    $('#logout').css('display', 'inline-block');
+                    $('.nav-content').css('display', 'block');
+                    console.log(localStorage.getItem('token'));
+                }
+            });
+        }
+        else{
+            Materialize.toast("Please enter appropriate Email & password", 5000);
+        }
+    }
+
+
+    const loadProject = async (value) => {
+            await fetch("http://localhost:3001/project/info",{
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem('token'),
+                    pid: value
+                })
+            })
+            .then((response) => response.json())
+            .then(function(res){
+                console.log(res.result[0]);
+                $('#uploadFiles').modal('open');
+            })
+        }
+
+
+
+</script>
+<script type="text/javascript" scr="script.js"></script>
+
+</html>

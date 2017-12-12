@@ -12,3 +12,6 @@ public.pem
 
 # npm debug logs
 npm-debug.log
+
+# aws-config
+config/aws-config.json

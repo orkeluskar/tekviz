@@ -24,3 +24,12 @@
      - node_modules/
    ```
 
+
+## To-do
+
+[] - Remove Null in profile view 
+[] - Upload profile Image
+[] - Gender radio button clickability (?)
+[] - Update profile
+[] - Admin panel, file upload changes
+[] - Sort Discussion by time

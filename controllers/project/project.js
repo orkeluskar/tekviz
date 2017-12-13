@@ -166,6 +166,63 @@ exports.addProject = function (req, res){
 }
 
 
+//Update project
+exports.updateProject = function (req, res){
+    console.log("Update PROJECT")
+    console.log(req.body);
+    //token isn't present in request
+    if (!("token" in req.body)){
+        return res.send({
+            message: "Please provide token",
+            error: true
+        });
+    }
+    let val = verifyToken.verifyToken(req.body.token);
+    //In case of incorrect token, payload won't be present in token
+    console.log(val.email);
+    console.log(val);
+    if(!("email" in val)){
+        return res.send({
+            message: "Unauthorized token!",
+            error: true
+        })
+    }
+    if(val.role !== "architect"){
+        console.log(val);
+        return res.send({
+            message: "You're not authorized to add/create project",
+            error: true
+        })
+    }
+
+    //In case of correct token
+        //below is for architect
+    let sql = "UPDATE project SET ? WHERE pid = ?";
+    //data to add to project table
+    let project = {
+        title: req.body.title,
+        description: req.body.description,
+        deadline: req.body.deadline,  //current datetime on the server
+    }
+    console.log(project);
+    con.query(sql, [project, req.body.pid], function(err, results, fields){
+        if(err){
+            console.log(err);
+            return res.send({
+                error: true,
+                message: err
+            });
+        }
+        //console.log(results, fields);
+        return res.send({
+            error: false,
+            result: results,
+            fields: fields
+        })
+    });
+}
+
+
 //add client to project
 /*
 Complete it as soon as add client is active
@@ -195,9 +252,16 @@ exports.addClient = function(req, res){
         })
     }
     let sql = "INSERT INTO enroll SET ?";
-    let enrolee = {
-
-    };
+    if(val.email != undefined){
+        let enroll_client = {
+          pid: req.body.pid,
+          email: req.body.email
+        }
+        con.query("INSERT INTO enroll SET ?", enroll_client,function (error, results, fields) {
+            if (error) console.log(error);
+            console.log(results);
+        });
+    }
 }
 
 

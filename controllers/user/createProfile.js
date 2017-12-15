@@ -22,7 +22,13 @@ exports.createProfile = function (req, res){
     else if(role == 'admin' || role == 'architect' || role == 'client'){
         user = {
             email: req.body.email,
-            password: hash
+            password: hash,
+            first_name: "",
+            last_name: "",
+            address: "",
+            personal_website: "",
+            // dob is updated to current time for temporary purposes
+            dob: new Date().toISOString().replace('T',' ').replace('Z','').slice(0,10)
         }
     }
     else{

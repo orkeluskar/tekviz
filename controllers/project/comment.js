@@ -75,7 +75,7 @@ exports.viewComment = function(req, res){
     /*
     Need to add for Client & Admin OR separate api's for them
     */
-    let sql_arch = "SELECT * FROM discussion WHERE pid = ?";
+    let sql_arch = "SELECT * FROM discussion WHERE pid = ? ORDER BY time asc";
     con.query(sql_arch, [req.body.pid], function(err, results, fields){
         if(err){
             console.log(err);

@@ -35,6 +35,7 @@ exports.viewProfile = function (req, res){
                     last_name: results[0].last_name,
                     password: results[0].password,
                     profile_url: results[0].profile_url,
+                    personal_website: results[0].personal_website,
                     message: "Successfully retrieved profile data"
             }
             console.log(resp);

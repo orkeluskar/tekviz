@@ -33,5 +33,5 @@ const uploads = require('./routes/upload');
 app.use('/',  uploads);
 
 
-let port = process.env.PORT || 3001;
+let port = 3001;
 app.listen(port);

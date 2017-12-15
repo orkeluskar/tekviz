@@ -336,7 +336,16 @@ exports.viewProjectMetaData = (req, res) => {
         })
     }
     else{
-        let sql = "SELECT * FROM project_metadata WHERE pid = " + mysql.escape(req.body.pid);
+        let sql;
+    
+        sql = "SELECT * FROM project_metadata WHERE pid = " + mysql.escape(req.body.pid);
+
+        // only showing approved files to client
+        if (val.role == "client"){
+            sql = "SELECT * FROM project_metadata WHERE approve = 1 AND pid = " + mysql.escape(req.body.pid);
+        }
+
+        console.log(sql);
 
         con.query(sql, (err, results, fields) => {
             
@@ -346,7 +355,7 @@ exports.viewProjectMetaData = (req, res) => {
                     message: err.sqlMessage
                 })
             }
-            else if (results.length < 1){
+            else if (results.length == 0){
                 return res.send({
                     error: true,
                     message: "No uploads/updates yet! Check back later!"

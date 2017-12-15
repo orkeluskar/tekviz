@@ -42,10 +42,11 @@ exports.checkCredentials = function (req, res){
         };
         var token = jwt.sign(user_data, cert, { algorithm: 'RS256'});
         var hash;
-        console.log(results[0].password);
-        console.log(req.body.password);
-        bcrypt.compareSync(req.body.password, results[0].password);
-        if(typeof(results) == typeof([]) && "password" in results[0]) {
+        //console.log(results[0].password);
+        //console.log(req.body.password);
+        
+        if(typeof(results) == typeof([]) && typeof(results[0]) == typeof({}) && "password" in results[0]) {
+            bcrypt.compareSync(req.body.password, results[0].password);
           hash = bcrypt.compareSync(req.body.password, results[0].password);
           console.log(hash);
         }

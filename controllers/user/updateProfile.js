@@ -27,12 +27,28 @@ exports.updateProfile = function(req, res){
             gender: req.body.gender,
             last_name: req.body.last_name,
             last_login: req.body.last_login,
-            profile_url: req.body.profile_url
+            profile_url: req.body.profile_url,
+            personal_website: req.body.personal_website
         }
         console.log(val.email);
         con.query("UPDATE "+val.role+" SET ? WHERE email= ?", [update_data, val.email],function (error, results, fields) {
-            if (error) console.log(error);
-            console.log(results);
+            if (error) {
+                console.log(error);
+                return res.send({
+                    error: true,
+                    message: "Something went wrong!"
+                })
+            }
+            else{
+                console.log(results);
+                return res.send({
+                    error: false,
+                    message: "Updation successful!",
+                    result: results
+                })
+            }
+            
+
         });
     }
 }

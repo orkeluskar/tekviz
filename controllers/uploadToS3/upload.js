@@ -29,7 +29,7 @@ exports.uploadtoS3 = function(req, res, next){
             In future will need to update the API to add exe files.
             Just need to change the URL to `URL` + `exe_filename.exe` -- something like this :-)
         */
-        let file_url = 'https://s3.us-east-2.amazonaws.com/tweettrendsomkar/'
+        let file_url = process.env.s3_bucket_url //from env variables
                         + req.body.pid
                         + '/'
                         + req.body.version
